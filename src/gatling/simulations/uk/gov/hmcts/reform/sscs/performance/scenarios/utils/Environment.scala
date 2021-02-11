@@ -7,8 +7,8 @@ object Environment {
 
   val baseURL = "https://benefit-appeal.perftest.platform.hmcts.net"
 
-  val minThinkTime = 1
-  val maxThinkTime = 3
+  val minThinkTime = 5
+  val maxThinkTime = 10
 
   val HttpProtocol = http
 
@@ -26,6 +26,7 @@ object Environment {
     "accept-language" -> "en-GB,en;q=0.9",
     "sec-fetch-site" -> "same-origin"
     )
+    
   val postHeader = Map(
     "content-type" -> "application/x-www-form-urlencoded",
     "sec-fetch-site" -> "same-origin"
