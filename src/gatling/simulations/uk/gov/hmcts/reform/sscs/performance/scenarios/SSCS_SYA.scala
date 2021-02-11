@@ -36,7 +36,7 @@ object SSCS_SYA
   // Enter PIP as Benefit Type 
   
   .group("SSCS_020_SelectBenefitType") {
-      exec(http("Enter PIP")
+      exec(http("Enter PIP As Benefit")
           .post(BaseURL + "/benefit-type")
           .headers(CommonHeader) // additional
           .headers(PostHeader) // define these in env
