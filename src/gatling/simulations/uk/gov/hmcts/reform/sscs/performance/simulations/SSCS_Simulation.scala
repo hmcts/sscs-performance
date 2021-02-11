@@ -13,7 +13,7 @@ class SSCS_Simulation extends Simulation {
     .baseUrl(BaseURL)
     .doNotTrackHeader("1")
     .inferHtmlResources()
-    //.silentResources
+    .silentResources
 
   val SSCSScenario = scenario( "SSCS_SYA")
     .exec(SSCS_SYA.SSCSSYAJourney)
