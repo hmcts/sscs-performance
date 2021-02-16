@@ -21,6 +21,6 @@ class SSCS_Simulation extends Simulation {
   setUp(
     SSCSScenario.inject(atOnceUsers(1))
   ).protocols(httpProtocol)
-    //.assertions(global.successfulRequests.percent.is(100))
+    .assertions(global.successfulRequests.percent.is(100))
 
 }

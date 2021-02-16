@@ -8,8 +8,8 @@ object Environment {
   val baseURL = "https://benefit-appeal.perftest.platform.hmcts.net"
   val idamURL = "https://idam-web-public.perftest.platform.hmcts.net"
 
-  val minThinkTime = 3
-  val maxThinkTime = 5
+  val minThinkTime = 1
+  val maxThinkTime = 2
 
   val HttpProtocol = http
 

@@ -99,8 +99,8 @@ object SSCS_SYA
         .headers(CommonHeader) 
         .headers(PostHeader) 
         .formParam("createAccount", "yes")
-        .check(regex("""state=(.*)" method""").saveAs("stateId"))
-        .check(regex("""name="_csrf" value="(.*)""").saveAs("csrf"))
+        .check(regex("""state=(.+)" method""").saveAs("stateId"))
+        .check(regex("""name="_csrf" value="(.+)" />""").saveAs("csrf"))
         .check(substring("Sign in or create an account")))
   }
 
@@ -112,7 +112,7 @@ object SSCS_SYA
   .group("SSCS_060_SignIn")
   {
     exec(http("Sign In")
-        .post(IdAMURL + "/login?client_id=sscs&redirect_uri=https%3A%2F%2Fbenefit-appeal.perftest.platform.hmcts.net%2Fauthenticated&ui_locales=en&response_type=code&state=$(stateId)")
+        .post(IdAMURL + "/login?client_id=sscs&redirect_uri=" + BaseURL + "%2Fauthenticated&ui_locales=en&response_type=code&state=${stateId}")
         .headers(CommonHeader) 
         .headers(PostHeader) 
         .formParam("username", "sscs+myapt.182@mailinator.com")
@@ -120,9 +120,14 @@ object SSCS_SYA
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
-        .check(substring("Your draft benefit appeals")))
+        .check(substring("Your draft benefit appeals"))
+        .check(substring("""<a href="/edit-appeal?caseId=""").count.saveAs("draftCount")))
   }
 
+  .exec { session =>
+    println(session)
+    session
+  }
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
 // Click Create New application
