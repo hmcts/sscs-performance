@@ -253,10 +253,10 @@ object SSCS_SYA
   .group("SSCS_160_SubmitAppelantDetails")
   {
     exec(http("Enter Appelant Details")
-        .post(BaseURL + "/enter-appelant-name")
+        .post(BaseURL + "/enter-appellant-name")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("title","Mr")
+        .formParam("title","Miss")
         .formParam("firstName","SSCS SYA")
         .formParam("lastName","PerfTest")
         .check(substring("Enter your date of birth")))
@@ -367,12 +367,18 @@ object SSCS_SYA
         .headers(CommonHeader) 
         .headers(PostHeader) 
         .formParam("item.whatYouDisagreeWith", "Performance testing disagree box")
-        .formParam("item.reasonForAppealing", "Social Security and Child Support forms including notices of appeal to the Department")
+        .formParam("item.reasonForAppealing", "Social Security and Child Support "))
+
+    .exec(http("Enter Reason For Appeal")
+        .post(BaseURL + "/reason-for-appealing")
+        .headers(CommonHeader) 
+        .headers(PostHeader) 
+        .formParam("item.whatYouDisagreeWith", "Performance testing disagree box")
+        .formParam("item.reasonForAppealing", "Social Security and Child Support ")
         .check(substring("Anything else you want to tell the tribunal")))
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
-
 
 // Enter Anything else
 
@@ -408,60 +414,101 @@ object SSCS_SYA
   {
     exec(http("Click Choose File Button")
       .post(BaseURL + "/evidence-upload/item-0")
-        .header("accept", "*/*")
-        .header("accept-encoding", "gzip, deflate, br")
-        .header("accept-language", "en-GB,en-US;q=0.9,en;q=0.8,en-AU;q=0.7,hr;q=0.6,be;q=0.5,br;q=0.4,ar;q=0.3")
-        .header("content-type", "multipart/form-data; boundary=----WebKitFormBoundaryWo70L6FvA5hvk6Tk")
-        .header("csrf-token", "0")
-        .header("sec-fetch-dest", "empty")
-        .header("sec-fetch-mode", "cors")
-        .header("sec-fetch-site", "same-origin")
-        .header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36")
-        .header("x-dtpc", "3$170105210_143h9vCMKPQRPFJMQESLQPRNJDURKLRHGNFJLE-0e31")
-        .header("x-requested-with", "XMLHttpRequest")
-        .bodyPart(RawFileBodyPart("file", "AKS-Workshop.pdf")
-        .fileName("AKS-Workshop.pdf.pdf")
-          .transferEncoding("binary"))
-          .asMultipartForm
-        .check(status.is(200)))
-    /*
-    exec(http("Click Choose File Button")
+      .header("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryp95uCCxYktALnk3E")
+      .header("csrf-token", "0")
+      .body(RawFileBody("2MbFileUpload.txt"))
+      .check(status.is(200)))
+
+    .exec(http("Click Choose File Button")
       .get(BaseURL + "/evidence-upload")
       .headers(CommonHeader) 
       .headers(PostHeader) 
-      .check(substring("Delete")))*/
+      .check(substring("Delete")))
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
-  // Enter 
-/*
-  .group("SSCS_")
+  // No more files, Save & Continue on Evidence page
+
+  .group("SSCS_270_EvidenceContinue")
   {
-    exec(http("")
-        .post(BaseURL + "/")
+    exec(http("No Additional Evidence Continue")
+        .post(BaseURL + "/evidence-upload")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("")
-        .check(substring("")))
+        .check(substring("Briefly describe the evidence you’ve just uploaded")))
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
-  // Enter 
+  // Enter description of evidence and continue
 
-  .group("SSCS_")
+  .group("SSCS_280_EvidenceDescription")
   {
-    exec(http("")
-        .post(BaseURL + "/")
+    exec(http("Description Of Evidence")
+        .post(BaseURL + "/evidence-description")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("")
-        .check(substring("")))
+        .formParam("describeTheEvidence", "The file uploaded is used for performance testing")
+        .check(substring("Do you want to attend the hearing")))
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
-*/
+    // Enter description of evidence and continue
+
+  .group("SSCS_280_EvidenceDescription")
+  {
+    exec(http("Description Of Evidence")
+        .post(BaseURL + "/evidence-description")
+        .headers(CommonHeader) 
+        .headers(PostHeader) 
+        .formParam("describeTheEvidence", "The file uploaded is used for performance testing")
+        .check(substring("Do you want to attend the hearing")))
+  }
+
+  .pause(MinThinkTime seconds,MaxThinkTime seconds)
+
+    // Attend hearing - No
+
+  .group("SSCS_290_AttendHearing")
+  {
+    exec(http("Attend Hearing No")
+        .post(BaseURL + "/the-hearing")
+        .headers(CommonHeader) 
+        .headers(PostHeader) 
+        .formParam("attendHearing", "no")
+        .check(substring("You have chosen not to attend the hearing")))
+  }
+
+  .pause(MinThinkTime seconds,MaxThinkTime seconds)
+
+    // Save & Continue - not attend hearing
+
+  .group("SSCS_300_NoHearingContinue")
+  {
+    exec(http("No Hearing Continue")
+        .post(BaseURL + "/not-attending-hearing")
+        .headers(CommonHeader) 
+        .headers(PostHeader) 
+        .check(substring("Check your answers")))
+  }
+
+  .pause(MinThinkTime seconds,MaxThinkTime seconds)
+    
+  // Check & Send - Submit Appeal
+
+  .group("SSCS_310_CheckYourAppeal")
+  {
+    exec(http("Submit Appeal")
+        .post(BaseURL + "/check-your-appeal")
+        .headers(CommonHeader) 
+        .headers(PostHeader) 
+        .formParam("signer", "SSCS SYA PerfTest")
+        .check(substring("Your appeal has been submitted")))
+  }
+
+  .pause(MinThinkTime seconds,MaxThinkTime seconds)
+
 }
   
