@@ -15,9 +15,12 @@ class SSCS_Simulation extends Simulation {
     .inferHtmlResources()
     .silentResources
 
-  val SSCSScenario = scenario( "SSCS_SYA")
-    .exec(SSCS_SYA.SSCSSYAJourney)
-
+  val SSCSScenario = scenario("SSCS_SYA")
+    .exec(
+      //CreateUser.CreateCitizen,
+      SSCS_SYA.SSCSSYAJourney
+    )
+  
   setUp(
     SSCSScenario.inject(atOnceUsers(1))
   ).protocols(httpProtocol)
