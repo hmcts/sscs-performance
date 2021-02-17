@@ -16,7 +16,6 @@ object SSCS_SYA
   val MaxThinkTime = Environment.maxThinkTime
 
   val CommonHeader = Environment.commonHeader
-  val GetHeader = Environment.getHeader
   val PostHeader = Environment.postHeader
 
   val postcodeFeeder = csv("postcodes.csv").random
@@ -422,7 +421,6 @@ object SSCS_SYA
     .exec(http("Click Choose File Button")
       .get(BaseURL + "/evidence-upload")
       .headers(CommonHeader) 
-      .headers(PostHeader) 
       .check(substring("Delete")))
   }
 
@@ -497,7 +495,7 @@ object SSCS_SYA
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
     
   // Check & Send - Submit Appeal
-
+/*
   .group("SSCS_310_CheckYourAppeal")
   {
     exec(http("Submit Appeal")
@@ -509,6 +507,6 @@ object SSCS_SYA
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
-
+*/
 }
   

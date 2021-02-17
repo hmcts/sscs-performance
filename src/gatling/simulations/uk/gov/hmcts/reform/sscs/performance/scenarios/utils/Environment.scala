@@ -26,17 +26,12 @@ object Environment {
     "sec-fetch-site" -> "none",
     "sec-fetch-user" -> "?1",
     "upgrade-insecure-requests" -> "1",
-    "user-agent" -> "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
-  )
-
-  val getHeader = Map(
-    "accept-language" -> "en-GB,en;q=0.9",
+    "user-agent" -> "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36",
     "sec-fetch-site" -> "same-origin"
-    )
+  )
     
   val postHeader = Map(
     "content-type" -> "application/x-www-form-urlencoded",
-    "sec-fetch-site" -> "same-origin"
   )
 
 }
