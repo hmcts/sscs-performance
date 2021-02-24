@@ -11,36 +11,34 @@ object Common {
 
   val rnd = new Random()
   val now = LocalDate.now()
+  val patternDay = DateTimeFormatter.ofPattern("dd")
+  val patternMonth = DateTimeFormatter.ofPattern("MM")
   val patternYear = DateTimeFormatter.ofPattern("yyyy")
-  val patternDate = DateTimeFormatter.ofPattern("yyyyMMdd")
 
   def randomString(length: Int) = {
     rnd.alphanumeric.filter(_.isLetter).take(length).mkString
   }
 
-  def getDate(): String = {
-    now.format(patternDate)
-  }
 
-  def getDay(): String = {
+ def getDay(): String = {
     (1 + rnd.nextInt(28)).toString
   }
 
   def getMonth(): String = {
     (1 + rnd.nextInt(12)).toString
   }
-
-  //Dob >= 25 years
-  def getDobYear(): String = {
-    now.minusYears(25 + rnd.nextInt(70)).format(patternYear)
+  /*
+  def getDay(): String = {
+    (10 + rnd.nextInt(28)).toString.format(patternDay).reverse.padTo(2, '0').reverse //pads single-digit dates with a leading zero
   }
+
+  def getMonth(): String = {
+    (11 + rnd.nextInt(12)).toString.format(patternMonth).reverse.padTo(2, '0').reverse //pads single-digit dates with a leading zero
+  }
+  */
   //Dod <= 21 years
-  def getDodYear(): String = {
-    now.minusYears(1 + rnd.nextInt(20)).format(patternYear)
-  }
-
-  def getPostcode(): String = {
-    randomString(2).toUpperCase() + rnd.nextInt(10).toString + " " + rnd.nextInt(10).toString + randomString(2).toUpperCase()
+  def getYear(): String = {
+    now.minusYears(30 + rnd.nextInt(50)).format(patternYear)
   }
 
 /*

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.performance.scenarios
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import uk.gov.hmcts.reform.sscs.performance.scenarios.utils.Common
 import uk.gov.hmcts.reform.sscs.performance.scenarios.utils.Environment
 
 import scala.concurrent.duration._
@@ -19,12 +20,14 @@ object SSCS_SYA
   val PostHeader = Environment.postHeader
 
   val postcodeFeeder = csv("postcodes.csv").random
+  //val postCode = "TS1 1ST"
 
   val SSCSSYAJourney =
 
+  //val SYAEligibility =
   // Launch Homepage
 
-  group("SSCS_010_Homepage") 
+  group("SYA_010_Homepage") 
   {
       exec(http("Homepage")
           .get(BaseURL + "/")
@@ -36,7 +39,7 @@ object SSCS_SYA
 
   // Enter PIP as Benefit Type 
   
-  .group("SSCS_020_SelectBenefitType") 
+  .group("SYA_020_SelectBenefitType") 
   {
       exec(http("PIP Benefit")
           .post(BaseURL + "/benefit-type")
@@ -50,7 +53,7 @@ object SSCS_SYA
 
   // Select English as Language
 
-  .group("SSCS_020_SelectLanguage")
+  .group("SYA_020_SelectLanguage")
   {
     exec(http("Language")
         .post(BaseURL + "/language-preference")
@@ -64,7 +67,7 @@ object SSCS_SYA
 
 // Enter Post Code
 
-  .group("SSCS_030_EnterPostCode")
+  .group("SYA_030_EnterPostCode")
   {
     exec(http("Post Code")
         .post(BaseURL + "/postcode-check")
@@ -78,7 +81,7 @@ object SSCS_SYA
 
 // Click Continue on appeal will be decided by an independent tribunal
 
-  .group("SSCS_040_DecidedIndependent")
+  .group("SYA_040_DecidedIndependent")
   {
     exec(http("Decied Independent Tribunal")
         .post(BaseURL + "/independence")
@@ -91,7 +94,7 @@ object SSCS_SYA
 
 // Select I want to be able to save this appeal later
 
-  .group("SSCS_050_SaveAppealLater")
+  .group("SYA_050_SaveAppealLater")
   {
     exec(http("Save Appeal For Later")
         .post(BaseURL + "/create-account")
@@ -105,28 +108,65 @@ object SSCS_SYA
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
-// Enter Login credentials
+// Enter Login credentials. This will load the dashboard
+// Here there is more logic required. 
+// 10% of user will create an account and then do the journey E2E - submit appeal
+// remaining, will be percentage based and click on edit and then complete the E2E journey - SYA_200_ManualContactDetails onwards
 
-  .group("SSCS_060_SignIn")
+ // val SignIn =
+
+  .group("SYA_060_SignIn")
   {
     exec(http("Sign In")
         .post(IdAMURL + "/login?client_id=sscs&redirect_uri=" + BaseURL + "%2Fauthenticated&ui_locales=en&response_type=code&state=${stateId}")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("username", "sscs+myapt.182@mailinator.com") // perftest-sscs@perftest12345.com
-        .formParam("password", "Pass19word")                    // Pa55word11
+        .formParam("username", "perfsscs01@mailinator.com") // perfsscs01@mailinator.com - perfsscs10@mailinator.com
+        .formParam("password", "Pa55word11")                    // Pa55word11
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
-        .check(substring("Your draft benefit appeals"))
-        .check(substring("""<a href="/edit-appeal?caseId=""").count.saveAs("draftCount")))
+        .check(substring("Your draft benefit appeals")))
+        //.check(substring("""<a href="/edit-appeal?caseId=""").count.saveAs("draftCount")) // count for how many draft cases
+        //.check(regex("""edit-appeal.caseId=(.+)">Edit""").findRandom.saveAs("caseId"))) // find a case at random
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
+/*
+val EditCase = 
+  .exec 
+  {
+    session =>
+      println("Email Address: sscs+myapt.182@mailinator.com")
+      println("Draft Count:   " + session("draftCount").as[String])
+      println("Case Id:       " + session("caseId").as[String])
+    session
+  }
+*/
+ //edit-appeal?caseId=1613645971564140">Edit</a>
+
+ // This code needs to be in an IF statement. If drafCount >=1 do this, else, click on New Application
+ // If Edit is clicked on, the script needs to route to the check and send part
+
+  // Click Edit for a case at random
+  /*
+  .group("SYA_080_EditCase") 
+  {
+      exec(http("Edit A Case")
+          .get(BaseURL + "/edit-appeal?caseId=${caseId}")
+          .headers(CommonHeader) 
+          .headers(PostHeader) 
+          .formParam("caseId", "${caseId}")
+          .check(substring("Check your answers")))
+  }
+*/
+//===== eedit
 
 // Click Create New application
 
-  .group("SSCS_070_NewApplication")
+//val NewApplication =
+
+  .group("SYA_070_NewApplication")
   {
     exec(http("Create New Application")
         .get(BaseURL + "/new-appeal")
@@ -138,7 +178,7 @@ object SSCS_SYA
   
   // Enter PIP as Benefit Type 
   
-  .group("SSCS_080_SelectBenefitType") 
+  .group("SYA_080_SelectBenefitType") 
   {
       exec(http("PIP Benefit")
           .post(BaseURL + "/benefit-type")
@@ -150,7 +190,7 @@ object SSCS_SYA
 
   // Select English as Language
 
-  .group("SSCS_090_SelectLanguage")
+  .group("SYA_090_SelectLanguage")
   {
     exec(http("Language")
         .post(BaseURL + "/language-preference")
@@ -164,7 +204,7 @@ object SSCS_SYA
 
 // Enter Post Code
 
-  .group("SSCS_100_EnterPostCode")
+  .group("SYA_100_EnterPostCode")
   {
     exec(http("Post Code")
         .post(BaseURL + "/postcode-check")
@@ -178,7 +218,7 @@ object SSCS_SYA
 
 // Click Continue on appeal will be decided by an independent tribunal
 
-  .group("SSCS_110_DecidedIndependent")
+  .group("SYA_110_DecidedIndependent")
   {
     exec(http("Decied Independent Tribunal")
         .post(BaseURL + "/independence")
@@ -191,27 +231,50 @@ object SSCS_SYA
 
 // Yes, I have a Mandatory Reconsideration Notice (MRN)
 
-  .group("SSCS_120_DecidedIndependent")
+  .group("SYA_120_DecidedIndependent")
   {
     exec(http("Have You Got MRN")
         .post(BaseURL + "/have-you-got-an-mrn")
         .headers(CommonHeader) 
         .headers(PostHeader) 
         .formParam("haveAMRN", "yes")
-        .check(substring("When is your Mandatory Reconsideration Notice (MRN) dated")))
+        .check(substring("When is your Mandatory Reconsideration Notice")))
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
+  //Generate data to use (these are used multiple times throughout the flow)
+  .exec 
+  {
+    session =>
+      session
+        .set("firstName", "Perf" + Common.randomString(5))
+        .set("lastName", "SSCS" + Common.randomString(5))
+        .set("dobDay", Common.getDay())
+        .set("dobMonth", Common.getMonth())
+        .set("dobYear", Common.getYear())
+  }
+
+  .exec 
+  {
+    session =>
+      println("First name is:   " + session("firstName").as[String])
+      println("Last name is:    " + session("lastName").as[String])
+      println("DOB Day is:      " + session("dobDay").as[String])
+      println("DOB Month is:    " + session("dobMonth").as[String])
+      println("DOB Year is:     " + session("dobYear").as[String])
+    session
+  }
+
 // Enter MRN date
 
-  .group("SSCS_130_SubmitMRN")
+  .group("SYA_130_SubmitMRN")
   {
     exec(http("Enter MRN date")
         .post(BaseURL + "/mrn-date")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("mrnDate.day", "10")
+        .formParam("mrnDate.day", "${dobDay}")
         .formParam("mrnDate.month", "02")
         .formParam("mrnDate.year", "2021")
         .check(substring("Select the Personal Independence Payment number")))
@@ -221,7 +284,7 @@ object SSCS_SYA
 
   // Select the DWP Personal Independence Payment number 
 
-  .group("SSCS_140_DWPOffice")
+  .group("SYA_140_DWPOffice")
   {
     exec(http("Select DWP Office")
         .post(BaseURL + "/dwp-issuing-office")
@@ -235,7 +298,7 @@ object SSCS_SYA
 
 // Appointee - Select - I'm appealing for myself
 
-  .group("SSCS_150_AppealingMyself")
+  .group("SYA_150_AppealingMyself")
   {
     exec(http("I'm Appealing Myself")
         .post(BaseURL + "/are-you-an-appointee")
@@ -249,15 +312,15 @@ object SSCS_SYA
 
 // Enter Appelant details
 
-  .group("SSCS_160_SubmitAppelantDetails")
+  .group("SYA_160_SubmitAppelantDetails")
   {
     exec(http("Enter Appelant Details")
         .post(BaseURL + "/enter-appellant-name")
         .headers(CommonHeader) 
         .headers(PostHeader) 
         .formParam("title","Miss")
-        .formParam("firstName","SSCS SYA")
-        .formParam("lastName","PerfTest")
+        .formParam("firstName","${firstName}")
+        .formParam("lastName","${lastName}")
         .check(substring("Enter your date of birth")))
   }
 
@@ -265,15 +328,15 @@ object SSCS_SYA
 
 // Enter DOB
 
-  .group("SSCS_170_AppelantDOB")
+  .group("SYA_170_AppelantDOB")
   {
     exec(http("Enter Appelant DOB")
         .post(BaseURL + "/enter-appellant-dob")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("date.day","10")
-        .formParam("date.month","10")
-        .formParam("date.year","1970")
+        .formParam("date.day","${dobDay}")
+        .formParam("date.month","${dobMonth}")
+        .formParam("date.year","${dobYear}")
         .check(substring("You can find your National Insurance number on any letter about the benefit")))
   }
 
@@ -281,7 +344,7 @@ object SSCS_SYA
 
 // Enter 
 
-  .group("SSCS_180_NINumber")
+  .group("SYA_180_NINumber")
   {
     exec(http("Enter NI Number")
         .post(BaseURL + "/enter-appellant-nino")
@@ -295,7 +358,7 @@ object SSCS_SYA
 
 // Click link to enter postcode manually
 
-  .group("SSCS_190_PostCodeLink")
+  .group("SYA_190_PostCodeLink")
   {
     exec(http("Click Link to enter Address mannually")
         .post(BaseURL + "/enter-appellant-contact-details")
@@ -312,7 +375,7 @@ object SSCS_SYA
 
 // Enter Contact details manually
 
-  .group("SSCS_200_ManulContactDetails")
+  .group("SYA_200_ManualContactDetails")
   {
     exec(http("Enter Contact Details")
         .post(BaseURL + "/enter-appellant-contact-details")
@@ -322,8 +385,9 @@ object SSCS_SYA
         .formParam("addressLine2", "11 Performance Street")
         .formParam("townCity", "PerfCity")
         .formParam("county", "PerfCounty")
-        .formParam("postCode", "TS11ST")
+        .formParam("postCode", "TS1 1ST")
         .formParam("phoneNumber", "")
+        .formParam("emailAddress", "perfsscs01@mailinator.com")
         .check(substring("Do you want to receive text message notifications")))
   }
 
@@ -331,7 +395,7 @@ object SSCS_SYA
 
 // Do you want to receive text message notifications - No 
 
-  .group("SSCS_210_TextReminders")
+  .group("SYA_210_TextReminders")
   {
     exec(http("No Text Reminders")
         .post(BaseURL + "/appellant-text-reminders")
@@ -345,7 +409,7 @@ object SSCS_SYA
 
 // Do you want to register a representative - No
 
-  .group("SSCS_220_NoRepresentative")
+  .group("SYA_220_NoRepresentative")
   {
     exec(http("Select No to Representative")
         .post(BaseURL + "/representative")
@@ -359,7 +423,7 @@ object SSCS_SYA
 
 // Enter Reason for Appealing
 
-  .group("SSCS_230_ReasonForAppeal")
+  .group("SYA_230_ReasonForAppeal")
   {
     exec(http("Enter Reason For Appeal")
         .post(BaseURL + "/reason-for-appealing/item-0")
@@ -381,7 +445,7 @@ object SSCS_SYA
 
 // Enter Anything else
 
-  .group("SSCS_240_AnythingElse")
+  .group("SYA_240_AnythingElse")
   {
     exec(http("Enter Anything Else")
         .post(BaseURL + "/other-reason-for-appealing")
@@ -395,7 +459,7 @@ object SSCS_SYA
 
 // Would you like to upload evidence now? - Yes
 
-  .group("SSCS_250_YesUploadEvidence")
+  .group("SYA_250_YesUploadEvidence")
   {
     exec(http("Select Yes Upload Evidence")
         .post(BaseURL + "/evidence-provide")
@@ -409,7 +473,7 @@ object SSCS_SYA
 
   // Click on Choose File button. This will result in the page to refresh with the file name shown as files uploaded
 
-  .group("SSCS_260_ChooseFile")
+  .group("SYA_260_ChooseFile")
   {
     exec(http("Click Choose File Button")
       .post(BaseURL + "/evidence-upload/item-0")
@@ -428,7 +492,7 @@ object SSCS_SYA
 
   // No more files, Save & Continue on Evidence page
 
-  .group("SSCS_270_EvidenceContinue")
+  .group("SYA_270_EvidenceContinue")
   {
     exec(http("No Additional Evidence Continue")
         .post(BaseURL + "/evidence-upload")
@@ -441,7 +505,7 @@ object SSCS_SYA
 
   // Enter description of evidence and continue
 
-  .group("SSCS_280_EvidenceDescription")
+  .group("SYA_280_EvidenceDescription")
   {
     exec(http("Description Of Evidence")
         .post(BaseURL + "/evidence-description")
@@ -455,7 +519,7 @@ object SSCS_SYA
 
     // Enter description of evidence and continue
 
-  .group("SSCS_280_EvidenceDescription")
+  .group("SYA_280_EvidenceDescription")
   {
     exec(http("Description Of Evidence")
         .post(BaseURL + "/evidence-description")
@@ -469,7 +533,7 @@ object SSCS_SYA
 
     // Attend hearing - No
 
-  .group("SSCS_290_AttendHearing")
+  .group("SYA_290_AttendHearing")
   {
     exec(http("Attend Hearing No")
         .post(BaseURL + "/the-hearing")
@@ -483,7 +547,7 @@ object SSCS_SYA
 
     // Save & Continue - not attend hearing
 
-  .group("SSCS_300_NoHearingContinue")
+  .group("SYA_300_NoHearingContinue")
   {
     exec(http("No Hearing Continue")
         .post(BaseURL + "/not-attending-hearing")
@@ -495,18 +559,18 @@ object SSCS_SYA
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
     
   // Check & Send - Submit Appeal
-/*
-  .group("SSCS_310_CheckYourAppeal")
+
+  .group("SYA_310_CheckYourAppeal")
   {
     exec(http("Submit Appeal")
         .post(BaseURL + "/check-your-appeal")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("signer", "SSCS SYA PerfTest")
+        .formParam("signer", "${firstName} ${lastName}")
         .check(substring("Your appeal has been submitted")))
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
-*/
+
 }
   

@@ -6,11 +6,12 @@ import io.gatling.http.Predef._
 object Environment {
 
   val baseURL = "https://benefit-appeal.perftest.platform.hmcts.net"
+  val myaULR = "https://sscs-cor.perftest.platform.hmcts.net"
   val idamURL = "https://idam-web-public.perftest.platform.hmcts.net"
   val idamAPIURL = "https://idam-api.perftest.platform.hmcts.net"
 
-  val minThinkTime = 1
-  val maxThinkTime = 2
+  val minThinkTime = 2
+  val maxThinkTime = 3
 
   val HttpProtocol = http
   /*  .proxy(Proxy("proxyout.reform.hmcts.net", 8080)
