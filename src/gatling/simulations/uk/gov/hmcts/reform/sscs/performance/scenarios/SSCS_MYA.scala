@@ -40,15 +40,14 @@ object SSCS_MYA
   
   // Enter Login credentials. This will load either postcode or dashboard
 
-  // https://idam-web-public.perftest.platform.hmcts.net/login?redirect_uri=https%3A%2F%2Fsscs-cor.perftest.platform.hmcts.net%2Fsign-in&client_id=sscs&response_type=code&state=gjJcK9U82h
   .group("MYA_020_SignIn")
   {
     exec(http("Sign In")
         .post(IdAMURL + "/login?redirect_uri=" + MYABaseURL + "%2Fsign-in&client_id=sscs&response_type=code&state=PQ1CdmGUl0")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("username", "perfsscs01@mailinator.com") // perftest-sscs@perftest12345.com
-        .formParam("password", "Pa55word11")                    // Pa55word11
+        .formParam("username", "perfsscs01@mailinator.com") // this needs to be parameterised from a feeder
+        .formParam("password", "Pa55word11")                // this needs to be parameterised from a feeder   
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
@@ -58,7 +57,7 @@ object SSCS_MYA
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
-  // Enter PostCode - this is conditional and only done the first time a user logs In
+  // Enter PostCode - this is conditional and only done the first time a user logs In. Check this code works here or can be done in simulation
 /*
   .doIf ("${postCodeTrue}")
   {
@@ -132,6 +131,8 @@ object SSCS_MYA
     .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
   // Enter text in the box to describe the evidence and click on choose file
+  // Here we should look at uploading a larger file. So do something like a random number between 1-10. If its greater than 8 - upload a large file
+  // So maybe 2 of these requests, one with a larger payload
   
   .group("MYA_080_UploadFile")
   {

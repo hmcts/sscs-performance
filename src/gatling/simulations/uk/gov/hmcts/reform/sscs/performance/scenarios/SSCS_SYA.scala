@@ -24,7 +24,6 @@ object SSCS_SYA
 
   val SSCSSYAJourney =
 
-  //val SYAEligibility =
   // Launch Homepage
 
   group("SYA_010_Homepage") 
@@ -109,11 +108,10 @@ object SSCS_SYA
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
 // Enter Login credentials. This will load the dashboard
+
 // Here there is more logic required. 
 // 10% of user will create an account and then do the journey E2E - submit appeal
-// remaining, will be percentage based and click on edit and then complete the E2E journey - SYA_200_ManualContactDetails onwards
-
- // val SignIn =
+// remaining, will be percentage based and click on edit and then complete the E2E journey - SYA_120_DecidedIndependent onwards
 
   .group("SYA_060_SignIn")
   {
@@ -121,8 +119,8 @@ object SSCS_SYA
         .post(IdAMURL + "/login?client_id=sscs&redirect_uri=" + BaseURL + "%2Fauthenticated&ui_locales=en&response_type=code&state=${stateId}")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("username", "perfsscs01@mailinator.com") // perfsscs01@mailinator.com - perfsscs10@mailinator.com
-        .formParam("password", "Pa55word11")                    // Pa55word11
+        .formParam("username", "perfsscs01@mailinator.com") // this needs to be parameterised from a feeder
+        .formParam("password", "Pa55word11")                // this needs to be parameterised from a feeder
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
@@ -132,6 +130,11 @@ object SSCS_SYA
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
+
+
+ // This code needs to be in an IF statement. If drafCount >=1 do this, else, click on New Application
+ // If Edit is clicked on, the script needs to route to the SYA_120_DecidedIndependent part
+
 /*
 val EditCase = 
   .exec 
@@ -143,10 +146,6 @@ val EditCase =
     session
   }
 */
- //edit-appeal?caseId=1613645971564140">Edit</a>
-
- // This code needs to be in an IF statement. If drafCount >=1 do this, else, click on New Application
- // If Edit is clicked on, the script needs to route to the check and send part
 
   // Click Edit for a case at random
   /*
@@ -159,6 +158,8 @@ val EditCase =
           .formParam("caseId", "${caseId}")
           .check(substring("Check your answers")))
   }
+
+  .pause(MinThinkTime seconds,MaxThinkTime seconds)
 */
 //===== eedit
 
@@ -187,6 +188,8 @@ val EditCase =
           .formParam("benefitType", "Personal Independence Payment (PIP)")
           .check(substring("What language do you want us to use when")))
   }
+
+  .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
   // Select English as Language
 
@@ -387,7 +390,7 @@ val EditCase =
         .formParam("county", "PerfCounty")
         .formParam("postCode", "TS1 1ST")
         .formParam("phoneNumber", "")
-        .formParam("emailAddress", "perfsscs01@mailinator.com")
+        .formParam("emailAddress", "perfsscs01@mailinator.com") // this needs to match from the feeder
         .check(substring("Do you want to receive text message notifications")))
   }
 
@@ -566,7 +569,7 @@ val EditCase =
         .post(BaseURL + "/check-your-appeal")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("signer", "${firstName} ${lastName}")
+        .formParam("signer", "${firstName} ${lastName}") 
         .check(substring("Your appeal has been submitted")))
   }
 
