@@ -1,6 +1,6 @@
 {
   "email":"${emailAddress}",
-  "forename":"SSCS PerfTest",
+  "forename":"SSCSPerfTest",
   "id":"SSCS SYA Citizen",
   "password":"${password}",
   "roles":[
