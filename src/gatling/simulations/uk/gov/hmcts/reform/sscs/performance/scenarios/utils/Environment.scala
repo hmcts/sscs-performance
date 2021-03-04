@@ -10,8 +10,8 @@ object Environment {
   val idamURL = "https://idam-web-public.perftest.platform.hmcts.net"
   val idamAPIURL = "https://idam-api.perftest.platform.hmcts.net"
 
-  val minThinkTime = 7
-  val maxThinkTime = 10
+  val minThinkTime = 15
+  val maxThinkTime = 20
 
   val HttpProtocol = http
   /*  .proxy(Proxy("proxyout.reform.hmcts.net", 8080)

@@ -19,16 +19,17 @@ object SSCS_SYA
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
 
-  val postcodeFeeder = csv("postcodes.csv").random
-  //val postCode = "TS1 1ST"
+  val sscs_loginfeeder = csv("SSCSUserDetails.csv").circular
+  val postCode = "TS1 1ST"
 
-  val SSCSSYAJourney =
+  val SSCSSYAJourneyDraft =
 
   // Launch Homepage
 
-  group("SYA_010_Homepage") 
+    group("SYA_010_Homepage")
   {
-      exec(http("Homepage")
+    exec(flushHttpCache).exec(flushSessionCookies).exec(flushCookieJar)
+        .exec(http("Homepage")
           .get(BaseURL + "/")
           .headers(CommonHeader)
           .check(substring("Select a benefit type")))
@@ -119,8 +120,8 @@ object SSCS_SYA
         .post(IdAMURL + "/login?client_id=sscs&redirect_uri=" + BaseURL + "%2Fauthenticated&ui_locales=en&response_type=code&state=${stateId}")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("username", "perfsscs01@mailinator.com") // this needs to be parameterised from a feeder
-        .formParam("password", "Pa55word11")                // this needs to be parameterised from a feeder
+        .formParam("username", "${email}") // this needs to be parameterised from a feeder
+        .formParam("password", "${password}")                // this needs to be parameterised from a feeder
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
@@ -425,8 +426,10 @@ val EditCase =
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
 // Enter Reason for Appealing
+  
+  val SSCSSYAJourneyDraftComplete=
 
-  .group("SYA_230_ReasonForAppeal")
+  group("SYA_230_ReasonForAppeal")
   {
     exec(http("Enter Reason For Appeal")
         .post(BaseURL + "/reason-for-appealing/item-0")
@@ -574,6 +577,14 @@ val EditCase =
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
+    
+    val Signout=
+      group("SYA_320_Signout") {
+      exec(http("SYA_320_Signout")
+        .get("/sign-out")
+        .headers(PostHeader)
+        .check(status.in(200, 302, 304)))
+    }
 
 }
   

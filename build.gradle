@@ -1,8 +1,8 @@
 plugins {
-    id 'org.owasp.dependencycheck' version '6.0.1'
+    id 'org.owasp.dependencycheck' version '5.1.0'
     id 'scala'
     id 'com.github.lkishalmi.gatling' version '3.0.2'
-    //id 'java-gradle-plugin'
+    id 'java-gradle-plugin'
     id 'groovy'
     id 'com.gradle.plugin-publish' version '0.9.8'
     id 'maven-publish'
@@ -13,20 +13,19 @@ apply plugin: 'scala'
 group 'uk.gov.hmcts.reform'
 version = '1.0'
 
-sourceCompatibility = "11"
-targetCompatibility = "11"
-
 tasks.withType(JavaExec) {
-    jvmArgs = ['-Xms512m', '-Xmx512m']
+    jvmArgs = ['-Xms512m', '-Xmx1024m', '-XX:+UseConcMarkSweepGC']
 }
 
 
-/*jar {
+
+
+jar {
     manifest {
-        attributes 'Implementation-Title': 'Probate Performance Tests',
+        attributes 'Implementation-Title': 'SSCS Performance Tests',
                 'Implementation-Version': version
     }
-}*/
+}
 
 /*dependencyCheck {
     // Specifies if the build should be failed if a CVSS score above a specified level is identified.
