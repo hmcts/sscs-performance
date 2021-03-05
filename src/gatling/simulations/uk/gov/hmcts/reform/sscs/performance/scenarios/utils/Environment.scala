@@ -12,6 +12,9 @@ object Environment {
 
   val minThinkTime = 15
   val maxThinkTime = 20
+  val mrnDate="04"
+  val mrnMonth="03"
+  val mrnYear="2021"
 
   val HttpProtocol = http
   /*  .proxy(Proxy("proxyout.reform.hmcts.net", 8080)

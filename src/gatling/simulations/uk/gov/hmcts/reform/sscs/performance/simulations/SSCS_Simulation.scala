@@ -66,12 +66,12 @@ class SSCS_Simulation extends Simulation {
       SSCS_MYA.SSCSMYAJourney
     )
 
-  /*setUp(
-    UserCreationScenario.inject(rampUsers(130) during (1800))
+ /* setUp(
+    UserCreationScenario.inject(rampUsers(1) during (2))
   ).protocols(httpProtocol)*/
   
   setUp(
-    SSCSScenario3Drafts.inject(rampUsers(120) during (3600))
+    SSCSScenario3Drafts.inject(rampUsers(128) during (3600))
   ).protocols(httpProtocol)
   
   /*setUp(

@@ -278,8 +278,8 @@ val EditCase =
         .post(BaseURL + "/mrn-date")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("mrnDate.day", "${dobDay}")
-        .formParam("mrnDate.month", "02")
+        .formParam("mrnDate.day", "04")
+        .formParam("mrnDate.month", "03")
         .formParam("mrnDate.year", "2021")
         .check(substring("Select the Personal Independence Payment number")))
   }
