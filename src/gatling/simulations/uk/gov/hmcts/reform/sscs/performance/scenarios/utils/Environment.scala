@@ -10,8 +10,8 @@ object Environment {
   val idamURL = "https://idam-web-public.perftest.platform.hmcts.net"
   val idamAPIURL = "https://idam-api.perftest.platform.hmcts.net"
 
-  val minThinkTime = 15
-  val maxThinkTime = 20
+  val minThinkTime = 10
+  val maxThinkTime = 10
   val mrnDate="04"
   val mrnMonth="03"
   val mrnYear="2021"
@@ -35,7 +35,7 @@ object Environment {
   )
     
   val postHeader = Map(
-    "content-type" -> "application/x-www-form-urlencoded",
+    "content-type" -> "application/x-www-form-urlencoded"
   )
 
 }

@@ -10,6 +10,7 @@ class SSCS_Simulation extends Simulation {
 
   val BaseURL = Environment.baseURL
   val sscs_loginfeeder3drafts = csv("SSCSUserDetails3Drafts.csv").circular
+  val sscs_loginfeeder10drafts = csv("SSCSUserDetails10Drafts.csv").circular
 
   val httpProtocol = Environment.HttpProtocol
     .baseUrl(BaseURL)
@@ -27,6 +28,8 @@ class SSCS_Simulation extends Simulation {
   
   //below needs to cover a draft version upto transaction 220
   
+  //below is the scenario for creating 3 drafts
+  
   val SSCSScenario3Drafts = scenario("SSCS_SYA_3Drafts")
     .feed(sscs_loginfeeder3drafts)
     .repeat(3) {
@@ -36,6 +39,17 @@ class SSCS_Simulation extends Simulation {
         //SSCS_SYA.SSCSSYAJourneyDraftComplete
       )
     }
+  
+  //below is the scenario for creating 10 drafts
+  val SSCSScenario10Drafts = scenario("SSCS SYA 10 Drafts")
+      .feed(sscs_loginfeeder10drafts)
+      .repeat(10) {
+        exec(//CreateUser.CreateCitizen,
+          SSCS_SYA.SSCSSYAJourneyDraft ,
+          SSCS_SYA.Signout
+          //SSCS_SYA.SSCSSYAJourneyDraftComplete
+        )
+      }
   
   val SSCSScenarioDraftComplete = scenario("SSCS_SYA_Draft_Complete")
                           .exec(
@@ -71,7 +85,7 @@ class SSCS_Simulation extends Simulation {
   ).protocols(httpProtocol)*/
   
   setUp(
-    SSCSScenario3Drafts.inject(rampUsers(128) during (3600))
+    SSCSScenario10Drafts.inject(rampUsers(190) during (5400))
   ).protocols(httpProtocol)
   
   /*setUp(

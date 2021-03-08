@@ -391,7 +391,7 @@ val EditCase =
         .formParam("county", "PerfCounty")
         .formParam("postCode", "TS1 1ST")
         .formParam("phoneNumber", "")
-        .formParam("emailAddress", "perfsscs01@mailinator.com") // this needs to match from the feeder
+        .formParam("emailAddress", "${email}") // this needs to match from the feeder
         .check(substring("Do you want to receive text message notifications")))
   }
 
