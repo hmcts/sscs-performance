@@ -54,7 +54,7 @@ class SSCS_Simulation extends Simulation {
   
   val SSCSScenario15Drafts = scenario("SSCS SYA 15 Drafts")
          .feed(sscs_loginfeeder15drafts)
-         .repeat(10) {
+         .repeat(15) {
            exec(//CreateUser.CreateCitizen,
              SSCS_SYA.SSCSSYAJourneyDraft ,
              SSCS_SYA.Signout
