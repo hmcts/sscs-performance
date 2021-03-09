@@ -12,7 +12,7 @@ object Environment {
 
   val minThinkTime = 20
   val maxThinkTime = 30
-  val mrnDate="04"
+  val mrnDate="08"
   val mrnMonth="03"
   val mrnYear="2021"
 
