@@ -91,9 +91,9 @@ class SSCS_Simulation extends Simulation {
       SSCS_MYA.SSCSMYAJourney
     )
 
- /* setUp(
-    UserCreationScenario.inject(rampUsers(1) during (2))
-  ).protocols(httpProtocol)*/
+  setUp(
+    UserCreationScenario.inject(rampUsers(190) during (3600))
+  ).protocols(httpProtocol)
   
   setUp(
     SSCSScenario15Drafts.inject(rampUsers(190) during (5400))
