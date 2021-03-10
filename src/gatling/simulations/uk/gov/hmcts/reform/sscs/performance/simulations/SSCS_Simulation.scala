@@ -99,7 +99,7 @@ class SSCS_Simulation extends Simulation {
   ).protocols(httpProtocol)*/
   
   setUp(
-    SSCSScenarioDraftComplete.inject(rampUsers(599) during (3600))
+    SSCSScenarioDraftComplete.inject(rampUsers(599) during (5400))
   ).protocols(httpProtocol)
   
   /*setUp(
