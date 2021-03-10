@@ -12,6 +12,7 @@ class SSCS_Simulation extends Simulation {
   val sscs_loginfeeder3drafts = csv("SSCSUserDetails3Drafts.csv").circular
   val sscs_loginfeeder10drafts = csv("SSCSUserDetails10Drafts.csv").circular
   val sscs_loginfeeder15drafts = csv("SSCSUserDetails15Drafts.csv").circular
+  val sscs_loginfeeder1myadata = csv("SSCSUserDetailsForMYA.csv").circular
 
   val httpProtocol = Environment.HttpProtocol
     .baseUrl(BaseURL)
@@ -63,10 +64,12 @@ class SSCS_Simulation extends Simulation {
            }
   
   val SSCSScenarioDraftComplete = scenario("SSCS_SYA_Draft_Complete")
+    .feed(sscs_loginfeeder1myadata)
                           .exec(
                             //CreateUser.CreateCitizen,
-                            //SSCS_SYA.SSCSSYAJourneyDraft
-                            SSCS_SYA.SSCSSYAJourneyDraftComplete
+                            SSCS_SYA.SSCSSYAJourneyDraft,
+                            SSCS_SYA.SSCSSYAJourneyDraftComplete,
+                            SSCS_SYA.Signout
                           )
   
   // This needs to cover the Edit and then E2E journey
@@ -92,11 +95,11 @@ class SSCS_Simulation extends Simulation {
     )
 
   /*setUp(
-    UserCreationScenario.inject(rampUsers(190) during (3600))
-  ).protocols(httpProtocol)
-  */
+    UserCreationScenario.inject(rampUsers(600) during (5400))
+  ).protocols(httpProtocol)*/
+  
   setUp(
-    SSCSScenario15Drafts.inject(rampUsers(190) during (7200))
+    SSCSScenarioDraftComplete.inject(rampUsers(599) during (3600))
   ).protocols(httpProtocol)
   
   /*setUp(

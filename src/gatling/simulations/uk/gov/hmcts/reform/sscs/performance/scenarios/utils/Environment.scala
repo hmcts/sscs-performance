@@ -10,8 +10,8 @@ object Environment {
   val idamURL = "https://idam-web-public.perftest.platform.hmcts.net"
   val idamAPIURL = "https://idam-api.perftest.platform.hmcts.net"
 
-  val minThinkTime = 20
-  val maxThinkTime = 30
+  val minThinkTime = 15
+  val maxThinkTime = 20
   val mrnDate="08"
   val mrnMonth="03"
   val mrnYear="2021"
