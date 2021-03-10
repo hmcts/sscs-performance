@@ -494,7 +494,8 @@ val EditCase =
       .check(substring("Delete")))
   }
 
-  .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
+  .pause(50)
 
   // No more files, Save & Continue on Evidence page
 
