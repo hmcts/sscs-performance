@@ -4,6 +4,7 @@ package uk.gov.hmcts.reform.sscs.performance.scenarios
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import uk.gov.hmcts.reform.sscs.performance.scenarios.utils.Environment
+import uk.gov.hmcts.reform.sscs.performance.simulations.checks.CsrfCheck
 
 import scala.concurrent.duration._
 
@@ -20,19 +21,21 @@ object SSCS_MYA
   val PostHeader = Environment.postHeader
 
   val postcodeFeeder = csv("postcodes.csv").random
+  
 
-  val SSCSMYAJourney =
+  val SSCSMYAJourneyBeforeUpload =
 
   // Launch MYA Homepage with TYA reference number - https://sscs-cor.perftest.platform.hmcts.net/sign-in?tya=XeIpTC5Zfd
 
-  group("MYA_010_MYAHomepage") 
-  { 
+  group("MYA_010_MYAHomepage")
+  {
     exec(http("Homepage")
-      .get(MYABaseURL + "/sign-in?tya=PQ1CdmGUl0")
+      .get(MYABaseURL + "/sign-in?tya=${myareference}")
       .headers(CommonHeader)
-      .formParam("tya", "PQ1CdmGUl0")
-      .check(regex("""state=(.+)" method""").saveAs("stateId"))
-      .check(regex("""name="_csrf" value="(.+)" />""").saveAs("csrf"))      
+      .formParam("tya", "${myareference}")
+      //.check(regex("""state=(.+)" method""").saveAs("stateId"))
+      .check(CsrfCheck.save)
+      //.check(regex("""name="_csrf" value="(.+)" />""").saveAs("csrf"))
       .check(substring("Sign in or create an account")))
   }
 
@@ -43,28 +46,32 @@ object SSCS_MYA
   .group("MYA_020_SignIn")
   {
     exec(http("Sign In")
-        .post(IdAMURL + "/login?redirect_uri=" + MYABaseURL + "%2Fsign-in&client_id=sscs&response_type=code&state=PQ1CdmGUl0")
+        .post(IdAMURL + "/login?redirect_uri=" + MYABaseURL + "%2Fsign-in&client_id=sscs&response_type=code&state=${myareference}")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("username", "perfsscs01@mailinator.com") // this needs to be parameterised from a feeder
-        .formParam("password", "Pa55word11")                // this needs to be parameterised from a feeder   
+        .formParam("username", "${myaemail}") // this needs to be parameterised from a feeder
+        .formParam("password", "Pa55word11")                // this needs to be parameterised from a feeder
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
-        .check(substring("This is the postcode used when the appeal was registered").count.saveAs("postCodeTrue")) // If this is true, need to enter post code 1st
-        .check(substring("Status of your appeal").count.saveAs("appealStatus"))) // count for how many draft cases
+        .check(status.is(200))
+        .check(regex("Enter the postcode for the appeal").optional.saveAs("postcodecheck"))
+         .check(
+           checkIf("${postcodecheck.exists()}") {
+             CsrfCheck.save
+           }
+         ))
+  
   }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
   // Enter PostCode - this is conditional and only done the first time a user logs In. Check this code works here or can be done in simulation
-/*
-  .doIf ("${postCodeTrue}")
-  {
-    .group("MYA_030_PostCode")
+  .doIf("${postcodecheck.exists()}") {
+    group("MYA_030_PostCode")
     {
     exec(http("Enter PostCode")
-        .post(BaseURL + "/assign-case")
+        .post(MYABaseURL + "/assign-case")
         .headers(CommonHeader) 
         .headers(PostHeader) 
         .formParam("_csrf", "${csrf}")
@@ -75,7 +82,6 @@ object SSCS_MYA
 
     .pause(MinThinkTime seconds,MaxThinkTime seconds)
   }
-*/
   // Click on Hearing
 
   .group("MYA_040_ViewHearing")
@@ -89,8 +95,10 @@ object SSCS_MYA
     .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
   // Click on Provide Evidence
+    
+    val provideEvidence =
   
-  .group("MYA_050_TaskList")
+  group("MYA_050_TaskList")
   {
     exec(http("Click Provide Evidence")
       .get(MYABaseURL + "/task-list")
@@ -134,9 +142,9 @@ object SSCS_MYA
   // Here we should look at uploading a larger file. So do something like a random number between 1-10. If its greater than 8 - upload a large file
   // So maybe 2 of these requests, one with a larger payload
   
-  .group("MYA_080_UploadFile")
+    .group("MYA_080_Upload2MBFile")
   {
-    exec(http("Desribe and Upload File")
+    exec(http("Desribe and Upload 2MB File")
       .post(MYABaseURL + "/additional-evidence/upload?_csrf=${csrf}")
       .headers(CommonHeader) 
       .header("content-type", "multipart/form-data; boundary=----WebKitFormBoundaryBOgHbWr4LuU2ZuBi") 
@@ -149,10 +157,9 @@ object SSCS_MYA
     }
 
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
-
-  // Submit Evidence to the tribunal button
   
-  .group("MYA_090_SubmitEvidence")
+  // Submit Evidence to the tribunal button
+    .group("MYA_090_SubmitEvidence")
   {
     exec(http("Submit Evidence Tribunal")
       .post(MYABaseURL + "/additional-evidence/upload?_csrf=${csrf}")
@@ -163,24 +170,19 @@ object SSCS_MYA
       .formParam("buttonSubmit", "Submit evidence to the tribunal")
       .check(substring("You have submitted additional evidence")))
     }
-
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
-
-  // Click Appeal Details
   
-  .group("MYA_100_AppealDetails")
+val SSCSSYAJourneyDraftComplete=
+  // Click Appeal Details
+  group("MYA_100_AppealDetails")
   {
     exec(http("Appeal Details")
       .get(MYABaseURL + "/your-details")
       .headers(CommonHeader) 
       .check(substring("Appellant contact email address")))
     }
-
     .pause(MinThinkTime seconds,MaxThinkTime seconds)
-
-
   // Click - Your Pip benefit Appeal breadcrumb
-  
   .group("MYA_110_YourAppeal")
   {
     exec(http("Your Benefit Appeal")
@@ -188,11 +190,8 @@ object SSCS_MYA
       .headers(CommonHeader) 
       .check(substring("Status of your appeal")))
     }
-
     .pause(MinThinkTime seconds,MaxThinkTime seconds)
-
     // Sign Out
-  
   .group("MYA_120_SignOut")
   {
     exec(http("Sign Out")
@@ -200,7 +199,6 @@ object SSCS_MYA
       .headers(CommonHeader) 
       .check(substring("Sign in or create an account")))
     }
-
     .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
 }
