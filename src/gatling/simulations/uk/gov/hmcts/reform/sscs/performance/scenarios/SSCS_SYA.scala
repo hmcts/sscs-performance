@@ -17,8 +17,7 @@ object SSCS_SYA
 
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
-
-  val sscs_loginfeeder = csv("SSCSUserDetails.csv").circular
+  
   val postCode = "TS1 1ST"
 
   val SSCSSYAJourneyDraft =
