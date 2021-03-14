@@ -37,8 +37,8 @@ object Feeders {
   val DataFeederWith3Drafts = Iterator.continually(Map("service" -> ({
     "3Drafts"
   }),
-    "SignoutNumber" -> ({
-      "280"
+    "Thinktime" -> ({
+      "120"
     })
 
   ));
@@ -46,24 +46,24 @@ object Feeders {
   val DataFeederWith10Drafts = Iterator.continually(Map("service" -> ({
     "10Drafts"
   }),
-    "SignoutNumber" -> ({
-      "390"
+    "Thinktime" -> ({
+      "120"
     })
   ));
 
   val DataFeederWith15Drafts = Iterator.continually(Map("service" -> ({
     "15Drafts"
   }),
-    "SignoutNumber" -> ({
-      "070"
+    "Thinktime" -> ({
+      "120"
     })
   ));
   
   val DataFeederNewApplications = Iterator.continually(Map("service" -> ({
     "NewAppeals"
   }),
-    "SignoutNumber" -> ({
-      "070"
+    "Thinktime" -> ({
+      "75"
     })
   ));
   

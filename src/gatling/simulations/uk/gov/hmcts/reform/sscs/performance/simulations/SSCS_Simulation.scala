@@ -95,17 +95,27 @@ class SSCS_Simulation extends Simulation {
   
   //below is the setup to run the MYA
   
-  setUp(
+  /*setUp(
     SSCSScenarioComplete.inject(atOnceUsers(1))
-  ).protocols(httpProtocol)
+  ).protocols(httpProtocol)*/
+  
+  
+  /*setUp(
+		 SSCSScenarioComplete.inject(nothingFor(5),rampUsers(1) during (1)),
+		 SSCSScenario3Drafts.inject(nothingFor(15),rampUsers(1) during (1)),
+		 SSCSScenario10Drafts.inject(nothingFor(35),rampUsers(1) during (1)),
+		 SSCSScenario15Drafts.inject(nothingFor(55),rampUsers(1) during (1)),
+		 SSCSMYAScenario.inject(nothingFor(65),rampUsers(1) during (1))
+     )
+     .protocols(httpProtocol)*/
   
   //below is the actual setup to run the whole suit
-  /*setUp(
+  setUp(
 		 SSCSScenarioComplete.inject(nothingFor(5),rampUsers(120) during (1200)),
 		 SSCSScenario3Drafts.inject(nothingFor(15),rampUsers(120) during (1200)),
 		 SSCSScenario10Drafts.inject(nothingFor(35),rampUsers(180) during (1200)),
 		 SSCSScenario15Drafts.inject(nothingFor(55),rampUsers(180) during (1200)),
-		 SSCSMYAScenario.inject(nothingFor(600),rampUsers(238) during (1200))
+		 SSCSMYAScenario.inject(nothingFor(65),rampUsers(600) during (1200))
      )
-     .protocols(httpProtocol)*/
+     .protocols(httpProtocol)
 }
