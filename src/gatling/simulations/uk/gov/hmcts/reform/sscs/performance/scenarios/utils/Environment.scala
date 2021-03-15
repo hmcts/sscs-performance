@@ -10,9 +10,9 @@ object Environment {
   val idamURL = "https://idam-web-public.perftest.platform.hmcts.net"
   val idamAPIURL = "https://idam-api.perftest.platform.hmcts.net"
 
-  val minThinkTime = 190
-  val maxThinkTime = 210
-  val mrnDate="08"
+  val minThinkTime = 140
+  val maxThinkTime = 160
+  val mrnDate="13"
   val mrnMonth="03"
   val mrnYear="2021"
 
@@ -37,5 +37,25 @@ object Environment {
   val postHeader = Map(
     "content-type" -> "application/x-www-form-urlencoded"
   )
-
+  
+  val uploadHeader= Map(
+    "accept" -> "*/*",
+    "accept-encoding" -> "gzip, deflate, br",
+    "accept-language" -> "en-US,en;q=0.9",
+    "content-type" -> "multipart/form-data; boundary=----WebKitFormBoundaryON1YeQt95PcnzL3A",
+    "csrf-token" -> "0",
+    "origin" -> baseURL,
+    "sec-ch-ua" -> """Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99""",
+    "sec-ch-ua-mobile" -> "?0",
+    "sec-fetch-dest" -> "empty",
+    "sec-fetch-mode" -> "cors",
+    "sec-fetch-site" -> "same-origin",
+    "x-dtpc" -> "3$18069364_100h9vHMNUBKSEALDFSNTCOQCQFJRKGAPTKNCQ-0e119",
+    "x-requested-with" -> "XMLHttpRequest")
+  
+  val headers_2MB = Map(
+    "Accept" -> "*/*",
+    "Content-Type" -> "multipart/form-data; boundary=----WebKitFormBoundarys6xSGb1uBlb76oH2",
+    "Origin" -> baseURL,
+    "X-Requested-With" -> "XMLHttpRequest")
 }

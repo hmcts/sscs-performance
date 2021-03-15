@@ -17,6 +17,8 @@ object SSCS_SYA
 
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
+  val uploadHeader=Environment.uploadHeader
+  val upload2MBHeader=Environment.headers_2MB
   
   val postCode = "TS1 1ST"
 
@@ -138,7 +140,7 @@ object SSCS_SYA
         .formParam("_csrf", "${csrf}")
         .check(substring("Your draft benefit appeals"))
         .check(substring("""<a href="/edit-appeal?caseId=""").count.saveAs("draftCount")) // count for how many draft cases
-        .check(regex("""edit-appeal.caseId=(.+)">Edit""").find(0).optional.saveAs("caseId"))) // find a case at random
+        .check(regex("""edit-appeal.caseId=(.+)">Edit""").find(1).optional.saveAs("caseId"))) // find a case at random
   }
   //.pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
@@ -424,7 +426,7 @@ val NewApplication =
 
   group("SYA_240_ReasonForAppeal")
   {
-    exec(http("Enter Reason For Appeal")
+    exec(http("Enter Reason For Appeal Item0")
         .post(BaseURL + "/reason-for-appealing/item-0")
         .headers(CommonHeader) 
         .headers(PostHeader) 
@@ -475,16 +477,20 @@ val NewApplication =
   .group("SYA_270_ChooseFile")
   {
     exec(http("Click Choose File Button")
-      .post(BaseURL + "/evidence-upload/item-0")
-      .header("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryp95uCCxYktALnk3E")
-      .header("csrf-token", "0")
-      .body(RawFileBody("2MbFileUpload.txt"))
-      .check(status.is(200)))
-
-    .exec(http("Click Choose File Button")
-      .get(BaseURL + "/evidence-upload")
-      .headers(CommonHeader) 
-      .check(substring("Delete")))
+         .post(BaseURL + "/evidence-upload/item-0")
+        .headers(upload2MBHeader)
+      /*.headers(CommonHeader)
+      .headers(PostHeader)*/
+        //.headers(uploadHeader)
+      /*.header("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryp95uCCxYktALnk3E")*/
+         .header("csrf-token", "0")
+        .body(RawFileBody("2MBFileUploadSYA.txt"))
+         .check(status.is(200)))
+      
+    .exec(http("Click Choose File Button Upload")
+          .get(BaseURL + "/evidence-upload")
+          .headers(CommonHeader)
+          .check(substring("Delete")))
   }
 
  // .pause(MinThinkTime seconds,MaxThinkTime seconds)
@@ -504,22 +510,8 @@ val NewApplication =
  // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
   // Enter description of evidence and continue
-
+  
   .group("SYA_290_EvidenceDescription")
-  {
-    exec(http("Description Of Evidence")
-        .post(BaseURL + "/evidence-description")
-        .headers(CommonHeader) 
-        .headers(PostHeader) 
-        .formParam("describeTheEvidence", "The file uploaded is used for performance testing")
-        .check(substring("Do you want to attend the hearing")))
-  }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
-    .pause("${Thinktime}")
-    // Enter description of evidence and continue
-
-  .group("SYA_300_EvidenceDescription")
   {
     exec(http("Description Of Evidence")
         .post(BaseURL + "/evidence-description")
@@ -533,7 +525,7 @@ val NewApplication =
     .pause("${Thinktime}")
     // Attend hearing - No
 
-  .group("SYA_310_AttendHearing")
+  .group("SYA_300_AttendHearing")
   {
     exec(http("Attend Hearing No")
         .post(BaseURL + "/the-hearing")
@@ -547,7 +539,7 @@ val NewApplication =
     .pause("${Thinktime}")
     // Save & Continue - not attend hearing
 
-  .group("SYA_320_NoHearingContinue")
+  .group("SYA_310_NoHearingContinue")
   {
     exec(http("No Hearing Continue")
         .post(BaseURL + "/not-attending-hearing")
@@ -560,7 +552,7 @@ val NewApplication =
     .pause("${Thinktime}")
   // Check & Send - Submit Appeal
 
-  .group("SYA_330_CheckYourAppeal")
+  .group("SYA_320_CheckYourAppeal")
   {
     exec(http("Submit Appeal")
         .post(BaseURL + "/check-your-appeal")
@@ -573,8 +565,8 @@ val NewApplication =
  // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
     val Signout=
-      group("SYA_340_Signout") {
-      exec(http("SYA_340_Signout")
+      group("SYA_330_Signout") {
+      exec(http("SYA_330_Signout")
         .get("/sign-out")
         .headers(PostHeader)
         .check(status.in(200, 302, 304)))

@@ -147,7 +147,7 @@ object SSCS_MYA
     exec(http("Desribe and Upload 2MB File")
       .post(MYABaseURL + "/additional-evidence/upload?_csrf=${csrf}")
       .headers(CommonHeader) 
-      .header("content-type", "multipart/form-data; boundary=----WebKitFormBoundaryBOgHbWr4LuU2ZuBi") 
+      .header("content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryBOgHbWr4LuU2ZuBi")
       .formParam("_csrf", "${csrf}")
       .bodyPart(RawFileBodyPart("additional-evidence-file", "MYA2MbFile.pdf")
       .fileName("MYA2MbFile.pdf")

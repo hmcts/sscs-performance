@@ -96,12 +96,12 @@ class SSCS_Simulation extends Simulation {
   //below is the setup to run the MYA
   
   /*setUp(
-    SSCSScenarioComplete.inject(atOnceUsers(1))
+    SSCSScenario15Drafts.inject(nothingFor(5),rampUsers(1) during (1))
   ).protocols(httpProtocol)*/
   
   
-  /*setUp(
-		 SSCSScenarioComplete.inject(nothingFor(5),rampUsers(1) during (1)),
+ /* setUp(
+		 SSCSScenarioComplete.inject(nothingFor(5),rampUsers(1) during (1))
 		 SSCSScenario3Drafts.inject(nothingFor(15),rampUsers(1) during (1)),
 		 SSCSScenario10Drafts.inject(nothingFor(35),rampUsers(1) during (1)),
 		 SSCSScenario15Drafts.inject(nothingFor(55),rampUsers(1) during (1)),
@@ -111,11 +111,11 @@ class SSCS_Simulation extends Simulation {
   
   //below is the actual setup to run the whole suit
   setUp(
-		 SSCSScenarioComplete.inject(nothingFor(5),rampUsers(120) during (1200)),
-		 SSCSScenario3Drafts.inject(nothingFor(15),rampUsers(120) during (1200)),
-		 SSCSScenario10Drafts.inject(nothingFor(35),rampUsers(180) during (1200)),
-		 SSCSScenario15Drafts.inject(nothingFor(55),rampUsers(180) during (1200)),
-		 SSCSMYAScenario.inject(nothingFor(65),rampUsers(600) during (1200))
+		 SSCSScenarioComplete.inject(nothingFor(5),rampUsers(50) during (1800)),
+		 SSCSScenario3Drafts.inject(nothingFor(15),rampUsers(50) during (1800)),
+		 SSCSScenario10Drafts.inject(nothingFor(35),rampUsers(77) during (1800)),
+		 SSCSScenario15Drafts.inject(nothingFor(55),rampUsers(77) during (1800)),
+		 SSCSMYAScenario.inject(nothingFor(65),rampUsers(574) during (1800))
      )
      .protocols(httpProtocol)
 }
