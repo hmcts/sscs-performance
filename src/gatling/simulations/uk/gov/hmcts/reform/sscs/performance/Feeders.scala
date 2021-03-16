@@ -38,7 +38,7 @@ object Feeders {
     "3Drafts"
   }),
     "Thinktime" -> ({
-      "105"
+      "100"
     })
 
   ));
@@ -47,7 +47,7 @@ object Feeders {
     "10Drafts"
   }),
     "Thinktime" -> ({
-      "105"
+      "100"
     })
   ));
 
@@ -55,7 +55,7 @@ object Feeders {
     "15Drafts"
   }),
     "Thinktime" -> ({
-      "105"
+      "100"
     })
   ));
   

@@ -172,7 +172,7 @@ object SSCS_MYA
     }
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
   
-val SSCSSYAJourneyDraftComplete=
+val SSCSMYAJourneyDraftComplete=
   // Click Appeal Details
   group("MYA_100_AppealDetails")
   {
