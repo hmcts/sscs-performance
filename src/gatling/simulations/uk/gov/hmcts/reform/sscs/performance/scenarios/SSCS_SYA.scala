@@ -140,7 +140,7 @@ object SSCS_SYA
         .formParam("_csrf", "${csrf}")
         .check(substring("Your draft benefit appeals"))
         .check(substring("""<a href="/edit-appeal?caseId=""").count.saveAs("draftCount")) // count for how many draft cases
-        .check(regex("""edit-appeal.caseId=(.+)">Edit""").find(1).optional.saveAs("caseId"))) // find a case at random
+        .check(regex("""edit-appeal.caseId=(.+)">Edit""").find(2).optional.saveAs("caseId"))) // find a case at random
   }
   //.pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
