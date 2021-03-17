@@ -10,14 +10,11 @@ object SSCS_SYA
 
   val BaseURL = Environment.baseURL
   val IdAMURL = Environment.idamURL
-
   val MinThinkTime = Environment.minThinkTime
   val MaxThinkTime = Environment.maxThinkTime
-
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
   val upload2MBHeader=Environment.headers_2MB
-  
   val postCode = "TS1 1ST"
 
   val SSCSSYAJourneyDraft =
@@ -58,7 +55,6 @@ object SSCS_SYA
   }
     .pause("${Thinktime}")
   // Select English as Language
-
   .group("SYA_030_SelectLanguage")
   {
     exec(http("Language")
@@ -71,7 +67,6 @@ object SSCS_SYA
   
     .pause("${Thinktime}")
 // Enter Post Code
-
   .group("SYA_040_EnterPostCode")
   {
     exec(http("Post Code")
@@ -83,7 +78,6 @@ object SSCS_SYA
   }
       .pause("${Thinktime}")
 // Click Continue on appeal will be decided by an independent tribunal
-
   .group("SYA_050_DecidedIndependent")
   {
     exec(http("Decied Independent Tribunal")
@@ -94,7 +88,6 @@ object SSCS_SYA
   }
     .pause("${Thinktime}")
 // Select I want to be able to save this appeal later
-
   .group("SYA_060_SaveAppealLater")
   {
     exec(http("Save Appeal For Later")
@@ -129,12 +122,8 @@ object SSCS_SYA
         .check(regex("""edit-appeal.caseId=(.+)">Edit""").find(1).optional.saveAs("caseId"))
     ) // find a case at random
   }
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
-
- // This code needs to be in an IF statement. If drafCount >=1 do this, else, click on New Application
- // If Edit is clicked on, the script needs to route to the SYA_120_DecidedIndependent part
-  
+    
      // Click Edit for a case at random
   .doIf("${caseId.exists()}") {
     group("SYA_100_EditCase") {
@@ -168,10 +157,8 @@ val NewApplication =
         .headers(CommonHeader)
         .check(substring("Select a benefit type")))
   }
-  
-    .pause("${Thinktime}")
+      .pause("${Thinktime}")
   // Enter PIP as Benefit Type
-  
   .group("SYA_090_SelectBenefitType")
   {
       exec(http("PIP Benefit")
@@ -181,10 +168,8 @@ val NewApplication =
           .formParam("benefitType", "Personal Independence Payment (PIP)")
           .check(substring("What language do you want us to use when")))
   }
-  
     .pause("${Thinktime}")
   // Select English as Language
-
   .group("SYA_100_SelectLanguage")
   {
     exec(http("Language")
@@ -195,8 +180,8 @@ val NewApplication =
         .check(substring("Enter your postcode")))
   }
     .pause("${Thinktime}")
+    
 // Enter Post Code
-
   .group("SYA_110_EnterPostCode")
   {
     exec(http("Post Code")
@@ -208,8 +193,8 @@ val NewApplication =
   }
   
     .pause("${Thinktime}")
+    
 // Click Continue on appeal will be decided by an independent tribunal
-
   .group("SYA_120_DecidedIndependent")
   {
     exec(http("Decied Independent Tribunal")
@@ -218,10 +203,9 @@ val NewApplication =
         .headers(PostHeader)
         .check(substring("Yes, I have a Mandatory Reconsideration Notice")))
   }
-  
     .pause("${Thinktime}")
+    
 // Yes, I have a Mandatory Reconsideration Notice (MRN)
-
   .group("SYA_130_DecidedIndependent")
   {
     exec(http("Have You Got MRN")
@@ -234,7 +218,6 @@ val NewApplication =
     .pause("${Thinktime}")
  
 // Enter MRN date
-
   .group("SYA_140_SubmitMRN")
   {
     exec(http("Enter MRN date")
@@ -246,10 +229,9 @@ val NewApplication =
         .formParam("mrnDate.year", "2021")
         .check(substring("Select the Personal Independence Payment number")))
   }
-  
-    .pause("${Thinktime}")
+      .pause("${Thinktime}")
+    
   // Select the DWP Personal Independence Payment number
-
   .group("SYA_150_DWPOffice")
   {
     exec(http("Select DWP Office")
@@ -260,8 +242,8 @@ val NewApplication =
         .check(substring("appealing for myself")))
   }
     .pause("${Thinktime}")
+    
 // Appointee - Select - I'm appealing for myself
-
   .group("SYA_160_AppealingMyself")
   {
     exec(http("I'm Appealing Myself")
@@ -272,8 +254,8 @@ val NewApplication =
         .check(substring("Enter your name")))
   }
     .pause("${Thinktime}")
+    
 // Enter Appelant details
-
   .group("SYA_170_SubmitAppelantDetails")
   {
     exec(http("Enter Appelant Details")
@@ -286,8 +268,8 @@ val NewApplication =
         .check(substring("Enter your date of birth")))
   }
     .pause("${Thinktime}")
+    
 // Enter DOB
-
   .group("SYA_180_AppelantDOB")
   {
     exec(http("Enter Appelant DOB")
@@ -300,8 +282,8 @@ val NewApplication =
         .check(substring("You can find your National Insurance number on any letter about the benefit")))
   }
     .pause("${Thinktime}")
+    
 // Enter
-
   .group("SYA_190_NINumber")
   {
     exec(http("Enter NI Number")
@@ -313,7 +295,6 @@ val NewApplication =
   }
     .pause("${Thinktime}")
 // Click link to enter postcode manually
-
   .group("SYA_200_PostCodeLink")
   {
     exec(http("Click Link to enter Address mannually")
@@ -326,10 +307,9 @@ val NewApplication =
         .formParam("emailAddress","")
         .check(substring("Address line 1")))
   }
-  
     .pause("${Thinktime}")
+    
 // Enter Contact details manually
-
   .group("SYA_210_ManualContactDetails")
   {
     exec(http("Enter Contact Details")
@@ -345,10 +325,9 @@ val NewApplication =
         .formParam("emailAddress", "${email}") // this needs to match from the feeder
         .check(substring("Do you want to receive text message notifications")))
   }
-  
     .pause("${Thinktime}")
+    
 // Do you want to receive text message notifications - No
-
   .group("SYA_220_TextReminders")
   {
     exec(http("No Text Reminders")
@@ -358,10 +337,9 @@ val NewApplication =
         .formParam("doYouWantTextMsgReminders", "no")
         .check(substring("Do you want to register a representative")))
   }
-  
     .pause("${Thinktime}")
+    
 // Do you want to register a representative - No
-
   .group("SYA_230_NoRepresentative")
   {
     exec(http("Select No to Representative")
@@ -371,10 +349,9 @@ val NewApplication =
         .formParam("hasRepresentative", "no")
         .check(substring("Your reasons for appealing")))
   }
-    
     .pause("${Thinktime}")
-//below is for draft complete after drafts are available
   
+//below is for draft complete after drafts are available
   val SSCSSYAJourneyDraftComplete=
   // Enter Reason for Appealing
 
@@ -395,10 +372,9 @@ val NewApplication =
         .formParam("item.reasonForAppealing", "Social Security and Child Support ")
         .check(substring("Anything else you want to tell the tribunal")))
   }
-  
     .pause("${Thinktime}")
+    
 // Enter Anything else
-
   .group("SYA_250_AnythingElse")
   {
     exec(http("Enter Anything Else")
@@ -408,10 +384,9 @@ val NewApplication =
         .formParam("otherReasonForAppealing", "You might also be able to find a representative through a library or from an organisation")
         .check(substring("Would you like to upload evidence now")))
   }
-  
     .pause("${Thinktime}")
+  
 // Would you like to upload evidence now? - Yes
-
   .group("SYA_260_YesUploadEvidence")
   {
     exec(http("Select Yes Upload Evidence")
@@ -421,21 +396,15 @@ val NewApplication =
         .formParam("evidenceProvide", "yes")
         .check(substring("You can only add MP3 & MP4 files after we have received your application")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
-    .pause("${Thinktime}")
+      .pause("${Thinktime}")
+  
   // Click on Choose File button. This will result in the page to refresh with the file name shown as files uploaded
-
   .group("SYA_270_ChooseFile")
   {
     exec(http("Click Choose File Button")
          .post(BaseURL + "/evidence-upload/item-0")
         .headers(upload2MBHeader)
-      /*.headers(CommonHeader)
-      .headers(PostHeader)*/
-        //.headers(uploadHeader)
-      /*.header("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryp95uCCxYktALnk3E")*/
-         .header("csrf-token", "0")
+       .header("csrf-token", "0")
         .body(RawFileBody("2MBFileUploadSYA.txt"))
          .check(status.is(200)))
       
@@ -444,8 +413,6 @@ val NewApplication =
           .headers(CommonHeader)
           .check(substring("Delete")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
 
   // No more files, Save & Continue on Evidence page
@@ -458,11 +425,9 @@ val NewApplication =
         .headers(PostHeader)
         .check(substring("Briefly describe the evidence you’ve just uploaded")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
-  // Enter description of evidence and continue
   
+  // Enter description of evidence and continue
   .group("SYA_290_EvidenceDescription")
   {
     exec(http("Description Of Evidence")
@@ -472,11 +437,9 @@ val NewApplication =
         .formParam("describeTheEvidence", "The file uploaded is used for performance testing")
         .check(substring("Do you want to attend the hearing")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
+  
     // Attend hearing - No
-
   .group("SYA_300_AttendHearing")
   {
     exec(http("Attend Hearing No")
@@ -486,11 +449,9 @@ val NewApplication =
         .formParam("attendHearing", "no")
         .check(substring("You have chosen not to attend the hearing")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
+  
     // Save & Continue - not attend hearing
-
   .group("SYA_310_NoHearingContinue")
   {
     exec(http("No Hearing Continue")
@@ -499,11 +460,10 @@ val NewApplication =
         .headers(PostHeader)
         .check(substring("Check your answers")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
+  
   // Check & Send - Submit Appeal
-
   .group("SYA_320_CheckYourAppeal")
   {
     exec(http("Submit Appeal")
@@ -513,9 +473,9 @@ val NewApplication =
         .formParam("signer", "${firstName} ${lastName}")
         .check(substring("Your appeal has been submitted")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
+  
+  // below is the sgnout transaction
     val Signout=
       group("SYA_330_Signout") {
       exec(http("SYA_330_Signout")
