@@ -13,16 +13,12 @@ object SSCS_MYA
 
   val MYABaseURL = Environment.myaULR
   val IdAMURL = Environment.idamURL
-
   val MinThinkTime = Environment.minThinkTime
   val MaxThinkTime = Environment.maxThinkTime
-
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
-
   val postcodeFeeder = csv("postcodes.csv").random
   
-
   val SSCSMYAJourneyBeforeUpload =
 
   // Launch MYA Homepage with TYA reference number - https://sscs-cor.perftest.platform.hmcts.net/sign-in?tya=XeIpTC5Zfd
@@ -49,8 +45,8 @@ object SSCS_MYA
         .post(IdAMURL + "/login?redirect_uri=" + MYABaseURL + "%2Fsign-in&client_id=sscs&response_type=code&state=${myareference}")
         .headers(CommonHeader) 
         .headers(PostHeader) 
-        .formParam("username", "${myaemail}") // this needs to be parameterised from a feeder
-        .formParam("password", "Pa55word11")                // this needs to be parameterised from a feeder
+        .formParam("username", "${myaemail}")
+        .formParam("password", "Pa55word11")
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
@@ -61,9 +57,7 @@ object SSCS_MYA
              CsrfCheck.save
            }
          ))
-  
   }
-
   .pause(MinThinkTime seconds,MaxThinkTime seconds)
 
   // Enter PostCode - this is conditional and only done the first time a user logs In. Check this code works here or can be done in simulation

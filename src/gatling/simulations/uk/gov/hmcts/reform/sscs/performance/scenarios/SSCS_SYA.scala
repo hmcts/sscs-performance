@@ -16,7 +16,6 @@ object SSCS_SYA
 
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
-  val uploadHeader=Environment.uploadHeader
   val upload2MBHeader=Environment.headers_2MB
   
   val postCode = "TS1 1ST"
@@ -34,21 +33,17 @@ object SSCS_SYA
        .set("dobMonth", Common.getMonth())
        .set("dobYear", Common.getYear())
    }
-   
-  
   // Launch Homepage
 
       .group("SYA_010_Homepage")
   {
     exec(flushHttpCache).exec(flushSessionCookies).exec(flushCookieJar)
-        .exec(http("Homepage")
-          .get(BaseURL + "/")
-          .headers(CommonHeader)
-          .check(substring("Select a benefit type")))
+      .exec(http("Homepage")
+        .get(BaseURL + "/")
+        .headers(CommonHeader)
+        .check(substring("Select a benefit type")))
   }
-
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
-      .pause("${Thinktime}")
+      .pause("${Thinktime}")//Thinktime value is defined in Feeder file as these think times are different from drafts.
 
   // Enter PIP as Benefit Type
   
@@ -61,8 +56,6 @@ object SSCS_SYA
           .formParam("benefitType", "Personal Independence Payment (PIP)")
           .check(substring("What language do you want us to use when")))
   }
-
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
   // Select English as Language
 
@@ -75,8 +68,7 @@ object SSCS_SYA
         .formParam("languagePreferenceWelsh", "no")
         .check(substring("Enter your postcode")))
   }
-
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
 // Enter Post Code
 
@@ -89,9 +81,7 @@ object SSCS_SYA
         .formParam("postcode", "TS1 1ST")
         .check(substring("Your appeal will be reviewed by a tribunal")))
   }
-
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
-    .pause("${Thinktime}")
+      .pause("${Thinktime}")
 // Click Continue on appeal will be decided by an independent tribunal
 
   .group("SYA_050_DecidedIndependent")
@@ -102,7 +92,6 @@ object SSCS_SYA
         .headers(PostHeader)
         .check(substring("I want to be able to save this appeal later")))
   }
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
 // Select I want to be able to save this appeal later
 
@@ -117,7 +106,6 @@ object SSCS_SYA
         .check(regex("""name="_csrf" value="(.+)" />""").saveAs("csrf"))
         .check(substring("Sign in or create an account")))
   }
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
 // Enter Login credentials. This will load the dashboard
 
@@ -131,8 +119,8 @@ object SSCS_SYA
         .post(IdAMURL + "/login?client_id=sscs&redirect_uri=" + BaseURL + "%2Fauthenticated&ui_locales=en&response_type=code&state=${stateId}")
         .headers(CommonHeader)
         .headers(PostHeader)
-        .formParam("username", "${email}") // this needs to be parameterised from a feeder
-        .formParam("password", "${password}")                // this needs to be parameterised from a feeder
+        .formParam("username", "${email}")
+        .formParam("password", "${password}")
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
@@ -147,16 +135,7 @@ object SSCS_SYA
  // This code needs to be in an IF statement. If drafCount >=1 do this, else, click on New Application
  // If Edit is clicked on, the script needs to route to the SYA_120_DecidedIndependent part
   
-    /*.exec
-  {
-    session =>
-      println("Email Address: sscs+myapt.182@mailinator.com")
-      println("Draft Count:   " + session("draftCount").as[String])
-      println("Case Id:       " + session("caseId").as[String])
-    session
-  }
-*/
-  // Click Edit for a case at random
+     // Click Edit for a case at random
   .doIf("${caseId.exists()}") {
     group("SYA_100_EditCase") {
       exec(http("Edit A Case")
@@ -189,8 +168,7 @@ val NewApplication =
         .headers(CommonHeader)
         .check(substring("Select a benefit type")))
   }
-
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
   // Enter PIP as Benefit Type
   
@@ -203,8 +181,7 @@ val NewApplication =
           .formParam("benefitType", "Personal Independence Payment (PIP)")
           .check(substring("What language do you want us to use when")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
   // Select English as Language
 
@@ -217,8 +194,6 @@ val NewApplication =
         .formParam("languagePreferenceWelsh", "no")
         .check(substring("Enter your postcode")))
   }
-
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
 // Enter Post Code
 
@@ -231,8 +206,7 @@ val NewApplication =
         .formParam("postcode", "TS1 1ST") // TS1 1ST, TS2 2ST, TS3 3ST
         .check(substring("Your appeal will be reviewed by a tribunal")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
 // Click Continue on appeal will be decided by an independent tribunal
 
@@ -244,8 +218,7 @@ val NewApplication =
         .headers(PostHeader)
         .check(substring("Yes, I have a Mandatory Reconsideration Notice")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
 // Yes, I have a Mandatory Reconsideration Notice (MRN)
 
@@ -258,8 +231,6 @@ val NewApplication =
         .formParam("haveAMRN", "yes")
         .check(substring("When is your Mandatory Reconsideration Notice")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
  
 // Enter MRN date
@@ -275,8 +246,7 @@ val NewApplication =
         .formParam("mrnDate.year", "2021")
         .check(substring("Select the Personal Independence Payment number")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
   // Select the DWP Personal Independence Payment number
 
@@ -289,8 +259,6 @@ val NewApplication =
         .formParam("pipNumber", "2")
         .check(substring("appealing for myself")))
   }
-
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
 // Appointee - Select - I'm appealing for myself
 
@@ -303,8 +271,6 @@ val NewApplication =
         .formParam("isAppointee","no")
         .check(substring("Enter your name")))
   }
-
-  //.pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
 // Enter Appelant details
 
@@ -319,8 +285,6 @@ val NewApplication =
         .formParam("lastName","${lastName}")
         .check(substring("Enter your date of birth")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
 // Enter DOB
 
@@ -335,8 +299,6 @@ val NewApplication =
         .formParam("date.year","${dobYear}")
         .check(substring("You can find your National Insurance number on any letter about the benefit")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
 // Enter
 
@@ -349,8 +311,6 @@ val NewApplication =
         .formParam("nino","AB998877A") // AB998877A, SK886644A
         .check(substring("Enter your contact details")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
     .pause("${Thinktime}")
 // Click link to enter postcode manually
 
@@ -366,8 +326,7 @@ val NewApplication =
         .formParam("emailAddress","")
         .check(substring("Address line 1")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
 // Enter Contact details manually
 
@@ -386,8 +345,7 @@ val NewApplication =
         .formParam("emailAddress", "${email}") // this needs to match from the feeder
         .check(substring("Do you want to receive text message notifications")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
 // Do you want to receive text message notifications - No
 
@@ -400,8 +358,7 @@ val NewApplication =
         .formParam("doYouWantTextMsgReminders", "no")
         .check(substring("Do you want to register a representative")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
 // Do you want to register a representative - No
 
@@ -414,8 +371,7 @@ val NewApplication =
         .formParam("hasRepresentative", "no")
         .check(substring("Your reasons for appealing")))
   }
-
-//  .pause(MinThinkTime seconds,MaxThinkTime seconds)
+    
     .pause("${Thinktime}")
 //below is for draft complete after drafts are available
   
@@ -439,8 +395,7 @@ val NewApplication =
         .formParam("item.reasonForAppealing", "Social Security and Child Support ")
         .check(substring("Anything else you want to tell the tribunal")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
 // Enter Anything else
 
@@ -453,8 +408,7 @@ val NewApplication =
         .formParam("otherReasonForAppealing", "You might also be able to find a representative through a library or from an organisation")
         .check(substring("Would you like to upload evidence now")))
   }
-
- // .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
     .pause("${Thinktime}")
 // Would you like to upload evidence now? - Yes
 

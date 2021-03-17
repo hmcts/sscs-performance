@@ -19,22 +19,12 @@ class SSCS_Simulation extends Simulation {
   val sscs_loginfeedermyadata = csv("SSCSUserDetailsForMYA.csv").circular
   
   val httpProtocol = Environment.HttpProtocol
-                     .baseUrl(BaseURL)
-                     .doNotTrackHeader("1")
-                     .inferHtmlResources()
-                     .silentResources
+             .baseUrl(BaseURL)
+             .doNotTrackHeader("1")
+             .inferHtmlResources()
+             .silentResources
   
-  // This needs to cover the E2E journey for a new user
-  val SSCSScenarioE2E = scenario("SSCS_SYA_E2E")
-                        .exec(
-                          //CreateUser.CreateCitizen,
-                          SSCS_SYA.SSCSSYAJourneyDraft,
-                          SSCS_SYA.SSCSSYAJourneyDraftComplete
-                        )
-  
-  //below needs to cover a draft version upto transaction 220
-  
-  //below is the scenario for complete the draft with 3 drafts available
+  //below  scenario is for complete the journey for the user having 3 drafts
   
   val SSCSScenario3Drafts = scenario("SSCS_SYA_3Drafts")
           .feed(sscs_loginfeeder3drafts).feed(Feeders.DataFeederWith3Drafts)
@@ -94,21 +84,11 @@ class SSCS_Simulation extends Simulation {
           .exec(SSCS_MYA.provideEvidence)
           .exec(SSCS_MYA.SSCSMYAJourneyDraftComplete)
   
-  //below is the setup to run the MYA
+  //below is the setup to run one scenario for sanity purpose
   
  /* setUp(
     UserCreationScenario.inject(nothingFor(5),rampUsers(300) during (1800))
   ).protocols(httpProtocol)*/
-  
-  
-  /* setUp(
-      SSCSScenarioComplete.inject(nothingFor(5),rampUsers(1) during (1))
-      SSCSScenario3Drafts.inject(nothingFor(15),rampUsers(1) during (1)),
-      SSCSScenario10Drafts.inject(nothingFor(35),rampUsers(1) during (1)),
-      SSCSScenario15Drafts.inject(nothingFor(55),rampUsers(1) during (1)),
-      SSCSMYAScenario.inject(nothingFor(65),rampUsers(1) during (1))
-      )
-      .protocols(httpProtocol)*/
   
   //below is the actual setup to run the whole suit
   setUp(
