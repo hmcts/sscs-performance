@@ -6,14 +6,14 @@ import io.gatling.http.Predef._
 object Environment {
 
   val baseURL = "https://benefit-appeal.perftest.platform.hmcts.net"
-  val myaULR = "https://sscs-cor.perftest.platform.hmcts.net"
+    val myaULR = "https://sscs-cor.perftest.platform.hmcts.net"
   val idamURL = "https://idam-web-public.perftest.platform.hmcts.net"
   val idamAPIURL = "https://idam-api.perftest.platform.hmcts.net"
 
   val minThinkTime = 140
   val maxThinkTime = 150
-  val mrnDate="13"
-  val mrnMonth="03"
+  val mrnDate="12"
+  val mrnMonth="05"
   val mrnYear="2021"
 
   val HttpProtocol = http

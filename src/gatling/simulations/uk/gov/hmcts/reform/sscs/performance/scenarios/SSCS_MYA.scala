@@ -90,9 +90,9 @@ object SSCS_MYA
 
   // Click on Provide Evidence
     
-    val provideEvidence =
+    
   
-  group("MYA_050_TaskList")
+    .group("MYA_050_TaskList")
   {
     exec(http("Click Provide Evidence")
       .get(MYABaseURL + "/task-list")
@@ -101,10 +101,12 @@ object SSCS_MYA
     }
 
     .pause(MinThinkTime seconds,MaxThinkTime seconds)
+  
+  val provideEvidence =
 
   // Click Submit Your Evidence Link
   
-  .group("MYA_060_SubmitEvidenceLink")
+  group("MYA_060_SubmitEvidenceLink")
   {
     exec(http("Submit Evidence Link")
       .get(MYABaseURL + "/additional-evidence")
@@ -135,16 +137,16 @@ object SSCS_MYA
   // Enter text in the box to describe the evidence and click on choose file
   // Here we should look at uploading a larger file. So do something like a random number between 1-10. If its greater than 8 - upload a large file
   // So maybe 2 of these requests, one with a larger payload
-  
-    .group("MYA_080_Upload2MBFile")
+   
+    .group("MYA_080_Upload20MBFile")
   {
-    exec(http("Desribe and Upload 2MB File")
+    exec(http("Desribe and Upload MP4 File")
       .post(MYABaseURL + "/additional-evidence/upload?_csrf=${csrf}")
       .headers(CommonHeader) 
       .header("content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryBOgHbWr4LuU2ZuBi")
       .formParam("_csrf", "${csrf}")
-      .bodyPart(RawFileBodyPart("additional-evidence-file", "MYA2MbFile.pdf")
-      .fileName("MYA2MbFile.pdf")
+      .bodyPart(RawFileBodyPart("additional-evidence-file", "20MB.mp4")
+      .fileName("20MB.mp4")
       .transferEncoding("binary")).asMultipartForm
       .check(regex("""_csrf=(.+)" method""").saveAs("csrf"))   
       .check(substring("""value="Delete" class""")))

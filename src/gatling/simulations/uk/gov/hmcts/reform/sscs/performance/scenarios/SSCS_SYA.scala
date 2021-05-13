@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.performance.scenarios
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import uk.gov.hmcts.reform.sscs.performance.scenarios.utils.{Common, Environment}
-import scala.concurrent.duration._
 
 object SSCS_SYA
 {
@@ -133,7 +132,6 @@ object SSCS_SYA
         .headers(PostHeader)
         .check(substring("Check your answers")))
       }
-        .pause(MinThinkTime seconds, MaxThinkTime seconds)
       .pause("${Thinktime}")
         .group("SYA_080_Check_Your_Appeal") {
         exec(http("Check Your Appeal")
@@ -147,7 +145,6 @@ object SSCS_SYA
     }
 //===== eedit
 // Click Create New application
-
 val NewApplication =
 
   group("SYA_080_NewApplication")
@@ -224,8 +221,8 @@ val NewApplication =
         .post(BaseURL + "/mrn-date")
         .headers(CommonHeader)
         .headers(PostHeader)
-        .formParam("mrnDate.day", "04")
-        .formParam("mrnDate.month", "03")
+        .formParam("mrnDate.day", "10")
+        .formParam("mrnDate.month", "05")
         .formParam("mrnDate.year", "2021")
         .check(substring("Select the Personal Independence Payment number")))
   }
@@ -387,25 +384,28 @@ val NewApplication =
     .pause("${Thinktime}")
   
 // Would you like to upload evidence now? - Yes
-  .group("SYA_260_YesUploadEvidence")
+  .group("SYA_260_NoUploadEvidence")
   {
-    exec(http("Select Yes Upload Evidence")
+    exec(http("Select No Upload Evidence")
         .post(BaseURL + "/evidence-provide")
         .headers(CommonHeader)
         .headers(PostHeader)
-        .formParam("evidenceProvide", "yes")
-        .check(substring("You can only add MP3 & MP4 files after we have received your application")))
+        .formParam("evidenceProvide", "no"))
+        //.check(substring("You can only add MP3 & MP4 files after we have received your application")))
   }
       .pause("${Thinktime}")
   
-  // Click on Choose File button. This will result in the page to refresh with the file name shown as files uploaded
+  /*// Click on Choose File button. This will result in the page to refresh with the file name shown as files uploaded
   .group("SYA_270_ChooseFile")
   {
     exec(http("Click Choose File Button")
          .post(BaseURL + "/evidence-upload/item-0")
         .headers(upload2MBHeader)
        .header("csrf-token", "0")
-        .body(RawFileBody("2MBFileUploadSYA.txt"))
+      .bodyPart(RawFileBodyPart("additional-evidence-file", "40MB.mp4")
+        .fileName("40MB.mp4")
+        .transferEncoding("binary")).asMultipartForm
+       // .body(RawFileBody("2MBFileUploadSYA.txt"))
          .check(status.is(200)))
       
     .exec(http("Click Choose File Button Upload")
@@ -437,10 +437,10 @@ val NewApplication =
         .formParam("describeTheEvidence", "The file uploaded is used for performance testing")
         .check(substring("Do you want to attend the hearing")))
   }
-    .pause("${Thinktime}")
+    .pause("${Thinktime}")*/
   
     // Attend hearing - No
-  .group("SYA_300_AttendHearing")
+  .group("SYA_270_AttendHearing")
   {
     exec(http("Attend Hearing No")
         .post(BaseURL + "/the-hearing")
@@ -452,7 +452,7 @@ val NewApplication =
     .pause("${Thinktime}")
   
     // Save & Continue - not attend hearing
-  .group("SYA_310_NoHearingContinue")
+  .group("SYA_280_NoHearingContinue")
   {
     exec(http("No Hearing Continue")
         .post(BaseURL + "/not-attending-hearing")
@@ -464,7 +464,7 @@ val NewApplication =
     .pause("${Thinktime}")
   
   // Check & Send - Submit Appeal
-  .group("SYA_320_CheckYourAppeal")
+  .group("SYA_290_CheckYourAppeal")
   {
     exec(http("Submit Appeal")
         .post(BaseURL + "/check-your-appeal")
@@ -477,8 +477,8 @@ val NewApplication =
   
   // below is the sgnout transaction
     val Signout=
-      group("SYA_330_Signout") {
-      exec(http("SYA_330_Signout")
+      group("SYA_300_Signout") {
+      exec(http("SYA_300_Signout")
         .get("/sign-out")
         .headers(PostHeader)
         .check(status.in(200, 302, 304)))

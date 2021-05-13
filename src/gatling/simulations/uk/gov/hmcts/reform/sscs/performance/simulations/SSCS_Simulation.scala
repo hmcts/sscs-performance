@@ -24,6 +24,18 @@ class SSCS_Simulation extends Simulation {
              .inferHtmlResources()
              .silentResources
   
+  //below scenarios for creating the drafts
+  
+  val SSCSScenario15drafts = scenario("SSCS_SYA_3drafts")
+    .feed(sscs_loginfeeder15drafts).feed(Feeders.DataFeederNewApplications)
+      .repeat(15) {
+        exec (
+          //CreateUser.CreateCitizen,
+          SSCS_SYA.SSCSSYAJourneyDraft,
+          SSCS_SYA.NewApplication
+        )
+      }
+  
   //below  scenario is for complete the journey for the user having 3 drafts
   
   val SSCSScenario3Drafts = scenario("SSCS_SYA_3Drafts")
@@ -81,16 +93,33 @@ class SSCS_Simulation extends Simulation {
   val SSCSMYAScenario = scenario("SSCS_MYA")
           .feed(myafeeder)
           .exec(SSCS_MYA.SSCSMYAJourneyBeforeUpload)
-          .exec(SSCS_MYA.provideEvidence)
-          .exec(SSCS_MYA.SSCSMYAJourneyDraftComplete)
+    .randomSwitch(
+    25d -> exec(SSCS_MYA.provideEvidence).exec(SSCS_MYA.SSCSMYAJourneyDraftComplete),
+    75d -> exec(SSCS_MYA.SSCSMYAJourneyDraftComplete)
+  )
+  
+  
   
   //below is the setup to run one scenario for sanity purpose
   
- /* setUp(
-    UserCreationScenario.inject(nothingFor(5),rampUsers(300) during (1800))
+  /*setUp(
+    SSCSScenario15drafts.inject(nothingFor(5),rampUsers(90) during (2400))
+  ).protocols(httpProtocol)*/
+  
+  /* setUp(
+     SSCSMYAScenario.inject(nothingFor(5),rampUsers(5) during (50))
   ).protocols(httpProtocol)*/
   
   //below is the actual setup to run the whole suit
+ /* setUp(
+		 SSCSScenarioComplete.inject(nothingFor(5),rampUsers(1) during (1)),
+		 SSCSScenario3Drafts.inject(nothingFor(15),rampUsers(1) during (1)),
+		 SSCSScenario10Drafts.inject(nothingFor(35),rampUsers(1) during (1)),
+		 SSCSScenario15Drafts.inject(nothingFor(55),rampUsers(1) during (1)),
+		 SSCSMYAScenario.inject(nothingFor(65),rampUsers(1) during (1))
+     )
+     .protocols(httpProtocol)*/
+  
   setUp(
 		 SSCSScenarioComplete.inject(nothingFor(5),rampUsers(50) during (1800)),
 		 SSCSScenario3Drafts.inject(nothingFor(15),rampUsers(50) during (1800)),
